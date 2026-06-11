@@ -26,10 +26,6 @@ def parse_args():
     parser.add_argument('--main_cfg_path', type=str, default="configs/sure/outdoor/sure_base.py")
     parser.add_argument(
         '--ckpt_path', type=str, default="SURE.ckpt", help='path to the checkpoint')
-    # parser.add_argument(
-    #     '--dump_dir', type=str, default=None, help="if set, the matching results will be dump to dump_dir")
-    # parser.add_argument(
-    #     '--profiler_name', type=str, default=None, help='options: [inference, pytorch], or leave it unset')
     parser.add_argument(
         '--batch_size', type=int, default=1, help='batch_size per gpu')
     parser.add_argument(
