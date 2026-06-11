@@ -198,82 +198,13 @@ class SURE(nn.Module):
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-#
-# try:
-#     from mmcv.ops import DeformConv2d
-# except ImportError:
-#     raise ImportError("Please install mmcv-full to use DeformConv2d.")
-#
-#
-# class InterFPN_GatedDeform(nn.Module):
-#     def __init__(self, in_channels: int=128, out_channels: int=256, kernel_size: int = 3):
-#         """
-#         使用低层特征引导的门控 + Deformable 卷积融合模块。
-#         feat_4 提供 offset（细节引导），同时提供 gate。
-#         """
-#         super().__init__()
-#         self.out_channels = out_channels
-#         self.kernel_size = kernel_size
-#
-#         # 1×1 降通道
-#         self.reduce_l = nn.Conv2d(128, out_channels, kernel_size=1)
-#         self.reduce_h = nn.Conv2d(out_channels, out_channels, kernel_size=1)
-#
-#         # Gate 注意力通道（用低层生成一个注意力 mask）
-#         self.gate = nn.Sequential(
-#             nn.Conv2d(out_channels, out_channels // 2, kernel_size=1),
-#             nn.ReLU(inplace=True),
-#             nn.Conv2d(out_channels // 2, 1, kernel_size=1),
-#             nn.Sigmoid()
-#         )
-#
-#         # Offset 预测器（来自低层）
-#         offset_channels = 2 * kernel_size * kernel_size
-#         self.offset_conv = nn.Conv2d(out_channels, offset_channels, kernel_size=kernel_size, padding=kernel_size // 2)
-#
-#         # Deformable conv 融合（作用在 concat 后特征）
-#         self.fuse_deform = DeformConv2d(out_channels * 2, out_channels, kernel_size=kernel_size, padding=kernel_size // 2)
-#
-#         self.relu = nn.ReLU(inplace=True)
-#
-#     def forward(self, feat_4: torch.Tensor, feat_8: torch.Tensor) -> torch.Tensor:
-#         """
-#         Args:
-#             feat_4: [B, C, H4, W4] 高分辨率特征（细节）
-#             feat_8: [B, C, H8, W8] 低分辨率特征（语义）
-#
-#         Returns:
-#             [B, out_channels, H8, W8] 融合后特征
-#         """
-#         B = feat_4.size(0)
-#         feat_4 = self.reduce_l(feat_4)                      # [B, C_out, H4, W4]
-#         feat_4 = F.adaptive_avg_pool2d(feat_4, feat_8.shape[-2:])  # → [B, C_out, H8, W8]
-#         feat_8 = self.reduce_h(feat_8)                      # [B, C_out, H8, W8]
-#
-#         # Gate 控制两者权重（由低层特征生成）
-#         gate_mask = self.gate(feat_4)                       # [B, 1, H, W] ∈ (0,1)
-#         gated_feat = gate_mask * feat_8 + (1 - gate_mask) * feat_4
-#
-#         # 低层特征生成 offset
-#         offset = self.offset_conv(feat_4)                   # [B, 2*K*K, H, W]
-#
-#         # 拼接 gated + feat_4（也可用 gated + feat_8）
-#         fused = torch.cat([feat_4, gated_feat], dim=1)      # [B, 2C_out, H, W]
-#         out = self.fuse_deform(fused, offset)               # [B, C_out, H, W]
-#         return self.relu(out)
-# import torch
-# import torch.nn as nn
-# import torch.nn.functional as F
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
 class InterFPN_SE(nn.Module):
     def __init__(self, in_channels_l=128, in_channels_h=256, out_channels=256, reduction=16):
-        """
-        feat_4 通道128，feat_8 通道256，输出256通道
-        SE注意力融合模块
-        """
         super().__init__()
         self.reduce_l = nn.Conv2d(in_channels_l, out_channels, kernel_size=1)
         self.reduce_h = nn.Conv2d(in_channels_h, out_channels, kernel_size=1)
@@ -296,7 +227,7 @@ class InterFPN_SE(nn.Module):
         feat_4 = F.adaptive_avg_pool2d(feat_4, feat_8.shape[-2:])  # 下采样到 feat_8 大小
         feat_8 = self.reduce_h(feat_8)  # B x 256 x H8 x W8
 
-        fused = feat_4 + feat_8  # 通道数一致，可以直接相加
+        fused = feat_4 + feat_8  
 
         se_weight = self.se(fused)  # B x 256 x 1 x 1
 
@@ -318,7 +249,6 @@ class DetailEnhancedFPN(nn.Module):
             nn.ReLU(inplace=True)
         )
 
-        # 保留细节路径（来自 f2）
         self.detail_path = nn.Sequential(
             nn.Conv2d(in_dims[0], out_dim, 1),
             nn.BatchNorm2d(out_dim),
@@ -333,15 +263,6 @@ class DetailEnhancedFPN(nn.Module):
         fused = torch.cat([f2_down, f4_down, f8_proj], dim=1)
         fused = self.fuse_conv(fused)
 
-        # 加入细节增强（从 f2 提取的高分辨率信息）
         detail_feat = F.adaptive_avg_pool2d(self.detail_path(f2), f8.shape[-2:])
         out = fused + detail_feat
         return out
-#
-# from loguru import logger
-#
-# def detect_NaN(feat_0, feat_1):
-#     logger.info(f'NaN detected in feature')
-#     logger.info(f"#NaN in feat_0: {torch.isnan(feat_0).int().sum()}, #NaN in feat_1: {torch.isnan(feat_1).int().sum()}")
-#     feat_0[torch.isnan(feat_0)] = 0
-#     feat_1[torch.isnan(feat_1)] = 0
