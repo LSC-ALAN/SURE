@@ -146,20 +146,11 @@ def main():
         sync_batchnorm=config.TRAINER.WORLD_SIZE > 0,
         use_distributed_sampler=False,
         profiler=profiler,
-        # weights_summary='full'
     )
     loguru_logger.info(f"Trainer initialized!")
     loguru_logger.info(f"Start training!")
-    # print(model)
-    def print_model(module, indent=0):
-        for name, child in module.named_children():
-            num_params = sum(p.numel() for p in child.parameters())
-            # 计算内存占用，float32 每个参数4字节
-            mem_mb = num_params * 4 / (1024 ** 2)
-            print("  " * indent + f"{name}: {child.__class__.__name__}, params: {num_params}, mem: {mem_mb:.3f} MB")
-            print_model(child, indent + 1)
 
-    print_model(model)
+
 
     trainer.fit(model, datamodule=data_module, ckpt_path=None)
 if __name__ == "__main__":
