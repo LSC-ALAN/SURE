@@ -1,6 +1,6 @@
 # SURE
 
-SURE is a local feature matching model with uncertainty estimation. This repository provides the PyTorch model, Lightning testing/training entrypoints, a single-pair demo, and optional ONNX deployment scripts.
+SURE is a local feature matching model with uncertainty estimation. This repository provides the PyTorch model, Lightning testing/training entrypoints, a single-pair demo.
 
 ## Installation
 
