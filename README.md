@@ -90,19 +90,6 @@ python train.py \
   --gpus 1
 ```
 
-## ONNX Deployment
-
-Install deployment dependencies:
-
-```shell
-cd deploy
-pip install -r requirements_deploy.txt
-python export_onnx.py
-python run_onnx.py
-```
-
-The C++ inference demo is in `deploy/sure_onnx_cpp`.
-
 ## Acknowledgement
 
 Part of the code is based on EfficientLoFTR and RLE. We thank the authors for their useful source code.
