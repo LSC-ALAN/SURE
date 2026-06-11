@@ -1,0 +1,10 @@
+onnx==1.17.0 
+onnxsim==0.4.36
+onnxruntime-gpu==1.18.0
+tensorrt-cu11
+tensorrt-lean-cu11
+tensorrt-dispatch-cu11
+
+
+# locate libnvinfer.so.8
+# export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:xxx/lib

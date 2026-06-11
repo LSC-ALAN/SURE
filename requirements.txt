@@ -1,0 +1,15 @@
+albumentations
+einops
+h5py
+joblib
+kornia
+lightning
+loguru
+matplotlib
+numpy<2
+opencv-python
+Pillow
+scipy
+timm
+tqdm
+yacs
