@@ -101,27 +101,6 @@ class SURE(nn.Module):
             })
 
 
-        # desc0, desc1 = data['feat_8_0'].flatten(2, 3), data['feat_8_1'].flatten(2, 3)
-        # kpts0, kpts1 = data['grid_8'], data['grid_8']
-        # # Keypoint normalization.
-        # kpts0 = normalize_keypoints(kpts0, data['image0'].shape[-2:])
-        # kpts1 = normalize_keypoints(kpts1, data['image1'].shape[-2:])
-        #
-        # kpts0, kpts1 = kpts0.transpose(1, 2), kpts1.transpose(1, 2)
-        # desc0 = desc0 + self.kenc(kpts0)
-        # desc1 = desc1 + self.kenc(kpts1)
-        # data.update({
-        #     'feat_8_0': desc0,
-        #     'feat_8_1': desc1,
-        # })
-        #
-        # with self.profiler.profile("coarse interaction"):
-        # self.joint_mamba(data)
-        # feat_8 = torch.cat([data['feat_8_0'], data['feat_8_1']], 0).view(2 * data['bs'], data['c'], data['h_8'], -1)
-        # feat_8 = torch.cat([data['feat_8_0'], data['feat_8_1']], 0)
-
-
-        # feat_c0, feat_c1 = torch.chunk(feat_8, 2, dim=0)
 
         mask_c0 = mask_c1 = None  # mask is useful in training
         if "mask0" in data:
