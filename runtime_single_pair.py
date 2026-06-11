@@ -2,6 +2,16 @@ import argparse
 import os
 import time
 import torch
+import cv2
+import matplotlib.cm as cm
+import matplotlib.pyplot as plt
+import torch
+
+from src.config.default import get_cfg_defaults
+from src.sure.sure import SURE
+from src.utils.misc import lower_config
+from src.utils.plotting import make_matching_figure
+
 
 def parse_args():
     parser = argparse.ArgumentParser(
@@ -67,16 +77,6 @@ def synchronize(device):
 
 def main():
     args = parse_args()
-
-    import cv2
-    import matplotlib.cm as cm
-    import matplotlib.pyplot as plt
-    import torch
-
-    from src.config.default import get_cfg_defaults
-    from src.sure.sure import SURE
-    from src.utils.misc import lower_config
-    from src.utils.plotting import make_matching_figure
 
     if args.device == "auto":
         args.device = "cuda" if torch.cuda.is_available() else "cpu"
