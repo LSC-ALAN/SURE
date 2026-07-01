@@ -475,7 +475,6 @@ class FineMatching(nn.Module):
             epistemic_threshold = data["epistemic_mean"].quantile(0.95)
             mask = torch.cat([mask, mask_]) & (data["aleatoric_mean"] < aleatoric_threshold)& (data["epistemic_mean"] < epistemic_threshold)
 
-            mask = torch.cat([mask, mask_])
 
             data["mconf"] = torch.cat([data["mconf"], data["mconf"]])
             data["b_ids"] = torch.cat([data["b_ids"], data["b_ids"]])
