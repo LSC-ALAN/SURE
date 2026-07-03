@@ -400,8 +400,8 @@ class FineMatching(nn.Module):
             return (vx * vy).mean() / (x.std() * y.std())
 
         def spearman_corr(x: torch.Tensor, y: torch.Tensor):
-            x_np = x.cpu().numpy()
-            y_np = y.cpu().numpy()
+            x_np = x.detach().cpu().numpy()
+            y_np = y.detach().cpu().numpy()
             corr, _ = spearmanr(x_np, y_np)
             return torch.tensor(corr, device=x.device)
 
