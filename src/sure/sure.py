@@ -59,7 +59,6 @@ class SURE(nn.Module):
             }
         """
         synchronize_cuda()
-        s=time.time()
         data.update(
             {
                 "bs": data["image0"].size(0),
@@ -76,7 +75,6 @@ class SURE(nn.Module):
                 'feats_x1': ret_dict['feats_x1'],
             })
             synchronize_cuda()
-            # s1 = time.time()
             feat_f = self.FPN(ret_dict['feats_x1'], ret_dict['feats_x2'], feats_c)
             feat_f0, feat_f1 = torch.chunk(feat_f, 2, dim=0)
 
@@ -106,13 +104,11 @@ class SURE(nn.Module):
         if "mask0" in data:
             mask_c0, mask_c1 = data["mask0"], data["mask1"]
         synchronize_cuda()
-        s2 = time.time()
 
         feat_c0, feat_c1 = self.loftr_coarse(feat_c0, feat_c1, mask_c0, mask_c1)
         if (torch.any(torch.isnan(feat_c0)) or torch.any(torch.isnan(feat_c1))):
             detect_NaN(feat_c0, feat_c1)
         synchronize_cuda()
-        s3=time.time()
 
         # 2.  Feature Interaction & Multi-Scale Fusion
 
@@ -150,7 +146,6 @@ class SURE(nn.Module):
             ),
         )
         synchronize_cuda()
-        s4=time.time()
 
         # 4. Fine-Level Matching
         K0 = data["i_ids"].shape[0] // data["bs"]
@@ -178,14 +173,7 @@ class SURE(nn.Module):
                 feat_f0, feat_f1,
                 feat_c0, feat_c1, data)
         synchronize_cuda()
-        # s5=time.time()
-        # t=s5-s
-        # print("total:",s5-s)
-        # print("backbone:",(s1-s))
-        # print("FPN:",(s2-s1))
-        # print("loftr:",(s3-s2))
-        # print("coarse:",(s4-s3))
-        # print("fine:",(s5-s4))
+
 
 
     def load_state_dict(self, state_dict, *args, **kwargs):
