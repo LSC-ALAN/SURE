@@ -90,6 +90,21 @@ python train.py \
   --gpus 1
 ```
 
+## Citation
+
+If you find SURE useful in your research, please consider citing our paper:
+
+```bibtex
+@inproceedings{li2026sure,
+  author    = {Li, Sicheng and Gu, Zaiwang and Zhang, Jie and Guo, Qing and Jiang, Xudong and Cheng, Jun},
+  title     = {{SURE}: Semi-dense {Uncertainty-REfined} Feature Matching},
+  booktitle = {2026 IEEE International Conference on Robotics and Automation (ICRA)},
+  year      = {2026},
+  pages     = {10267--10274},
+  doi       = {10.1109/ICRA57385.2026.11695914}
+}
+```
+
 ## Acknowledgement
 
 Part of the code is based on EfficientLoFTR and RLE. We thank the authors for their useful source code.
